@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
@@ -27,60 +26,63 @@
 
   <section id="tickets" class="tickets-section">
     <div class="container">
-      <h2>Bestel je tickets3</h2>
-      <p>Gelieve hieronder je naam/bedrijfsnaam te zetten zoals die op je tikkie, zo kunnen wij je bestelling onderscheiden met andere.</p>
+      <h2>Bestel je tickets</h2>
+      <p>Voer je naam/bedrijfsnaam in zoals die op je Tikkie staat.</p>
 
-```
-  <form id="ticketForm">
-    <label>Je naam</label>
-    <input type="text" name="buyerName" placeholder="Jouw naam" required>
+      <form id="ticketForm">
+        <label>Je naam</label>
+        <input type="text" name="buyerName" placeholder="Jouw naam" required>
 
-    <label>E-mailadres</label>
-    <input type="email" name="buyerEmail" placeholder="Jouw email" required>
+        <label>E-mailadres</label>
+        <input type="email" name="buyerEmail" placeholder="Jouw email" required>
 
-    <h3>Kies je tickets: </h3>
-    <p>Wil je de tickets gepersonaliseerd krijgen, voer dan per ticket de naam in.</p>
+        <h3>Kies je tickets</h3>
+        <p>Wil je de tickets gepersonaliseerd krijgen? Voer per ticket de naam in.</p>
 
-    <!-- Gold -->
-    <label>Gold tickets (€50):</label>
-    <input type="number" id="goldTickets" name="gold" min="0" value="0">
-    <div id="goldNamesContainer"></div>
+        <!-- Ticket Inputs -->
+        <div class="ticket-types">
+          <div class="ticket">
+            <label>Gold (€50)</label>
+            <input type="number" id="goldTickets" name="gold" min="0" value="0">
+            <div id="goldNamesContainer"></div>
+          </div>
 
-    <!-- Silver -->
-    <label>Silver tickets (€40):</label>
-    <input type="number" id="silverTickets" name="silver" min="0" value="0">
-    <div id="silverNamesContainer"></div>
+          <div class="ticket">
+            <label>Silver (€40)</label>
+            <input type="number" id="silverTickets" name="silver" min="0" value="0">
+            <div id="silverNamesContainer"></div>
+          </div>
 
-    <!-- Bronze -->
-    <label>Bronze tickets (€30):</label>
-    <input type="number" id="bronzeTickets" name="bronze" min="0" value="0">
-    <div id="bronzeNamesContainer"></div>
+          <div class="ticket">
+            <label>Bronze (€30)</label>
+            <input type="number" id="bronzeTickets" name="bronze" min="0" value="0">
+            <div id="bronzeNamesContainer"></div>
+          </div>
 
-    <!-- Bleacher 1 -->
-    <label>Bleacher 1 tickets (€25):</label>
-    <input type="number" id="bleacher1Tickets" name="bleacher1" min="0" value="0">
-    <div id="bleacher1NamesContainer"></div>
+          <div class="ticket">
+            <label>Bleacher 1 (€25)</label>
+            <input type="number" id="bleacher1Tickets" name="bleacher1" min="0" value="0">
+            <div id="bleacher1NamesContainer"></div>
+          </div>
 
-    <!-- Premium Bleacher -->
-    <label>Premium Bleacher (€35):</label>
-    <input type="number" id="premiumBleacherTickets" name="premiumBleacher" min="0" value="0">
-    <div id="premiumBleacherNamesContainer"></div>
+          <div class="ticket">
+            <label>Premium Bleacher (€35)</label>
+            <input type="number" id="premiumBleacherTickets" name="premiumBleacher" min="0" value="0">
+            <div id="premiumBleacherNamesContainer"></div>
+          </div>
+        </div>
 
-    <p>Let op bij betalen via Tikkie</p>
-      <p>Betaal het volledige bedrag in één keer. Anders wordt je bestelling na 2 dagen automatisch geannuleerd en krijg je je geld terug.</p>
-      <p>Wil je sneller annuleren of je geld terug? Neem gerust contact met ons op!</p>
-    
-    <button><a type="submit" href="https://tikkie.me/pay/ioc1m2fvuj871diguq6b">Bestellen</a></button>
-  </form>
+        <p>Betaal het volledige bedrag in één keer via Tikkie. Anders wordt je bestelling automatisch geannuleerd.</p>
 
-  <div id="tikkieLink" style="display:none; margin-top:20px;">
-    <p>Bedankt! Klik hieronder om te betalen via Tikkie:</p>
-    <a href="https://tikkie.me/pay/ioc1m2fvuj871diguq6b" target="_blank" class="tikkie-btn">Betaal via Tikkie</a>
-  </div>
+        <button type="submit">Bestellen</button>
+      </form>
 
-</div>
-```
+      <div id="tikkieLink" style="display:none; margin-top:20px;">
+        <p>Bedankt! Klik hieronder om te betalen via Tikkie:</p>
+        <a href="https://tikkie.me/pay/ioc1m2fvuj871diguq6b" target="_blank" class="tikkie-btn">Betaal via Tikkie</a>
+      </div>
 
+    </div>
   </section>
 
   <section id="contact" class="contact-section">
@@ -93,7 +95,7 @@
 
 <footer>
   <div class="container">
-    <p style="color: black;"> Eurokoop Alle rechten voorbehouden.</p>
+    <p>Eurokoop &copy; Alle rechten voorbehouden.</p>
   </div>
 </footer>
 
@@ -106,7 +108,11 @@ const ticketTypes = [
   {id: 'premiumBleacher', price: 35}
 ];
 
-// Dynamische naamvelden
+const form = document.getElementById('ticketForm');
+const tikkie = document.getElementById('tikkieLink');
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwAPwAAjXrNNq7zgax4bQ3FicEKZ85rdNl38upNlPMugkldUw795-7KT9mgpS4BVm9H/exec';
+
+// Dynamische naamvelden per ticket
 ticketTypes.forEach(type => {
   const input = document.getElementById(`${type.id}Tickets`);
   const container = document.getElementById(`${type.id}NamesContainer`);
@@ -117,24 +123,18 @@ ticketTypes.forEach(type => {
     for (let i = 1; i <= count; i++) {
       const label = document.createElement('label');
       label.textContent = `Naam voor ${type.id} ticket #${i}:`;
-
       const nameInput = document.createElement('input');
       nameInput.type = 'text';
       nameInput.name = `${type.id}Name${i}`;
       nameInput.placeholder = `Naam persoon #${i}`;
       nameInput.required = true;
-
       container.appendChild(label);
       container.appendChild(nameInput);
     }
   });
 });
 
-// Form en totaalprijs
-const form = document.getElementById('ticketForm');
-const tikkie = document.getElementById('tikkieLink');
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwAPwAAjXrNNq7zgax4bQ3FicEKZ85rdNl38upNlPMugkldUw795-7KT9mgpS4BVm9H/exec';
-
+// Totaalprijs tonen
 const totalPriceDisplay = document.createElement('p');
 totalPriceDisplay.style.fontWeight = 'bold';
 totalPriceDisplay.style.marginTop = '15px';
@@ -149,25 +149,24 @@ function updateTotalPrice() {
   totalPriceDisplay.textContent = `Totaal te betalen: €${total}`;
 }
 
-// Live update
 ticketTypes.forEach(type => {
   document.getElementById(`${type.id}Tickets`).addEventListener('input', updateTotalPrice);
 });
 updateTotalPrice();
 
 // Form submit
-form.addEventListener('submit', function(e) {
+form.addEventListener('submit', function(e){
   e.preventDefault();
 
-  const formData = new FormData(form); // ✅ FormData één keer
-  const totalTickets = ticketTypes.reduce((sum,type) => sum + (parseInt(formData.get(type.id)) || 0),0);
+  const formData = new FormData(form);
 
+  const totalTickets = ticketTypes.reduce((sum,type) => sum + (parseInt(formData.get(type.id))||0),0);
   if(totalTickets === 0){
     alert("Je moet minimaal 1 ticket bestellen!");
     return;
   }
 
-  // Verstuur FormData direct
+  // Verstuur FormData naar Google Sheet
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
     body: formData
