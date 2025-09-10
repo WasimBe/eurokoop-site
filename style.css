@@ -30,7 +30,7 @@ font-weight: bold;
 header nav a\:hover { text-decoration: underline; }
 
 .hero {
-background: url('hero-image.jpg') center/cover no-repeat;
+background: center/cover no-repeat;
 color: white;
 text-align: center;
 padding: 80px 20px;
