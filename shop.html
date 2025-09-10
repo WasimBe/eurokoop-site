@@ -27,7 +27,7 @@
 
   <section id="tickets" class="tickets-section">
     <div class="container">
-      <h2>Bestel je tickets</h2>
+      <h2>Bestel je tickets3</h2>
       <p>Gelieve hieronder je naam/bedrijfsnaam te zetten zoals die op je tikkie, zo kunnen wij je bestelling onderscheiden met andere.</p>
 
 ```
@@ -98,13 +98,6 @@
 </footer>
 
 <script>
-
-function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({success:true, message:"Web App werkt"}))
-                       .setMimeType(ContentService.MimeType.JSON);
-}
-
-
 const ticketTypes = [
   {id: 'gold', price: 50},
   {id: 'silver', price: 40},
@@ -137,15 +130,15 @@ ticketTypes.forEach(type => {
   });
 });
 
-// Form submit naar Google Sheet
+// Form en totaalprijs
 const form = document.getElementById('ticketForm');
 const tikkie = document.getElementById('tikkieLink');
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNHzukufDJQUSvyzsz-nZZHRAJJBCuD7SIOjF_QcTTG5rqfuJiEPOi2SSTS8y3WBR7/exec'; // Vul hier je Web App URL in
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwAPwAAjXrNNq7zgax4bQ3FicEKZ85rdNl38upNlPMugkldUw795-7KT9mgpS4BVm9H/exec';
 
 const totalPriceDisplay = document.createElement('p');
 totalPriceDisplay.style.fontWeight = 'bold';
 totalPriceDisplay.style.marginTop = '15px';
-document.getElementById('ticketForm').appendChild(totalPriceDisplay);
+form.appendChild(totalPriceDisplay);
 
 function updateTotalPrice() {
   let total = 0;
@@ -156,57 +149,40 @@ function updateTotalPrice() {
   totalPriceDisplay.textContent = `Totaal te betalen: €${total}`;
 }
 
-// Voeg event listeners toe voor live update
+// Live update
 ticketTypes.forEach(type => {
   document.getElementById(`${type.id}Tickets`).addEventListener('input', updateTotalPrice);
 });
-
-// Initialiseer totaalprijs
 updateTotalPrice();
 
-
+// Form submit
 form.addEventListener('submit', function(e) {
   e.preventDefault();
 
-  const formData = new FormData(form);
-  const orderData = {
-    buyerName: formData.get('buyerName'),
-    buyerEmail: formData.get('buyerEmail')
-  };
+  const formData = new FormData(form); // ✅ FormData één keer
+  const totalTickets = ticketTypes.reduce((sum,type) => sum + (parseInt(formData.get(type.id)) || 0),0);
 
-  ticketTypes.forEach(type => {
-    const count = parseInt(formData.get(type.id)) || 0;
-    orderData[type.id] = count;
-
-    const names = [];
-    for(let i=1;i<=count;i++){
-      names.push(formData.get(`${type.id}Name${i}`));
-    }
-    orderData[`${type.id}Names`] = names;
-  });
-
-  const totalTickets = ticketTypes.reduce((sum,type) => sum + (orderData[type.id] || 0),0);
   if(totalTickets === 0){
     alert("Je moet minimaal 1 ticket bestellen!");
     return;
   }
 
-  fetch(APPS_SCRIPT_URL,{
+  // Verstuur FormData direct
+  fetch(APPS_SCRIPT_URL, {
     method: 'POST',
-    body: JSON.stringify(orderData),
-    headers:{'Content-Type':'application/json'}
+    body: formData
   })
-  .then(res=>res.json())
-  .then(data=>{
+  .then(res => res.json())
+  .then(data => {
     if(data.success){
       form.style.display='none';
       tikkie.style.display='block';
     } else {
-      alert('Er is iets misgegaan bij het plaatsen van je bestelling.');
+      alert('Er is iets misgegaan.');
       console.error(data);
     }
   })
-  .catch(err=>{
+  .catch(err => {
     alert('Kan bestelling niet verzenden. Probeer later.');
     console.error(err);
   });
