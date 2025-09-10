@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glory 104 Tickets</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-container">
+    <h1>Glory 104 Tickets</h1>
+    <nav>
+      <a href="#tickets">Tickets</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h2>Beleef Glory 104 live bij RTM AHOY Op 14 Oktober!</h2>
+    <p>Bestel nu je tickets en mis niets van dit epische evenement.</p>
+  </section>
+
+  <section id="tickets" class="tickets-section">
+    <div class="container">
+      <h2>Bestel je tickets</h2>
+      <p>Gelieve hieronder je naam/bedrijfsnaam te zetten zoals die op je tikkie, zo kunnen wij je bestelling onderscheiden met andere.</p>
+
+```
+  <form id="ticketForm">
+    <label>Je naam</label>
+    <input type="text" name="buyerName" placeholder="Jouw naam" required>
+
+    <label>E-mailadres</label>
+    <input type="email" name="buyerEmail" placeholder="Jouw email" required>
+
+    <h3>Kies je tickets: </h3>
+    <p>Wil je de tickets gepersonaliseerd krijgen, voer dan per ticket de naam in.</p>
+
+    <!-- Gold -->
+    <label>Gold tickets (€50):</label>
+    <input type="number" id="goldTickets" name="gold" min="0" value="0">
+    <div id="goldNamesContainer"></div>
+
+    <!-- Silver -->
+    <label>Silver tickets (€40):</label>
+    <input type="number" id="silverTickets" name="silver" min="0" value="0">
+    <div id="silverNamesContainer"></div>
+
+    <!-- Bronze -->
+    <label>Bronze tickets (€30):</label>
+    <input type="number" id="bronzeTickets" name="bronze" min="0" value="0">
+    <div id="bronzeNamesContainer"></div>
+
+    <!-- Bleacher 1 -->
+    <label>Bleacher 1 tickets (€25):</label>
+    <input type="number" id="bleacher1Tickets" name="bleacher1" min="0" value="0">
+    <div id="bleacher1NamesContainer"></div>
+
+    <!-- Premium Bleacher -->
+    <label>Premium Bleacher (€35):</label>
+    <input type="number" id="premiumBleacherTickets" name="premiumBleacher" min="0" value="0">
+    <div id="premiumBleacherNamesContainer"></div>
+
+    <p>Let op bij betalen via Tikkie</p>
+      <p>Betaal het volledige bedrag in één keer. Anders wordt je bestelling na 2 dagen automatisch geannuleerd en krijg je je geld terug.</p>
+      <p>Wil je sneller annuleren of je geld terug? Neem gerust contact met ons op!</p>
+    
+    <button><a type="submit" href="https://tikkie.me/pay/ioc1m2fvuj871diguq6b">Bestellen</a></button>
+  </form>
+
+  <div id="tikkieLink" style="display:none; margin-top:20px;">
+    <p>Bedankt! Klik hieronder om te betalen via Tikkie:</p>
+    <a href="https://tikkie.me/pay/ioc1m2fvuj871diguq6b" target="_blank" class="tikkie-btn">Betaal via Tikkie</a>
+  </div>
+
+</div>
+```
+
+  </section>
+
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <h2>Contact</h2>
+      <p>Vragen over tickets? Stuur een email naar <a href="mailto:info@eurokoop.net">info@eurokoop.net</a>.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p style="color: black;"> Eurokoop Alle rechten voorbehouden.</p>
+  </div>
+</footer>
+
+<script>
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({success:true, message:"Web App werkt"}))
+                       .setMimeType(ContentService.MimeType.JSON);
+}
+
+
+const ticketTypes = [
+  {id: 'gold', price: 50},
+  {id: 'silver', price: 40},
+  {id: 'bronze', price: 30},
+  {id: 'bleacher1', price: 25},
+  {id: 'premiumBleacher', price: 35}
+];
+
+// Dynamische naamvelden
+ticketTypes.forEach(type => {
+  const input = document.getElementById(`${type.id}Tickets`);
+  const container = document.getElementById(`${type.id}NamesContainer`);
+
+  input.addEventListener('input', function() {
+    const count = parseInt(this.value) || 0;
+    container.innerHTML = '';
+    for (let i = 1; i <= count; i++) {
+      const label = document.createElement('label');
+      label.textContent = `Naam voor ${type.id} ticket #${i}:`;
+
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.name = `${type.id}Name${i}`;
+      nameInput.placeholder = `Naam persoon #${i}`;
+      nameInput.required = true;
+
+      container.appendChild(label);
+      container.appendChild(nameInput);
+    }
+  });
+});
+
+// Form submit naar Google Sheet
+const form = document.getElementById('ticketForm');
+const tikkie = document.getElementById('tikkieLink');
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwrkJx21O_52GlyWd2CuOjVsDZ33hvVyGGCbGIS2GzSjiTF_IRr-py2Gzi91f6v5s5L/exec'; // Vul hier je Web App URL in
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(form);
+  const orderData = {
+    buyerName: formData.get('buyerName'),
+    buyerEmail: formData.get('buyerEmail')
+  };
+
+  ticketTypes.forEach(type => {
+    const count = parseInt(formData.get(type.id)) || 0;
+    orderData[type.id] = count;
+
+    const names = [];
+    for(let i=1;i<=count;i++){
+      names.push(formData.get(`${type.id}Name${i}`));
+    }
+    orderData[`${type.id}Names`] = names;
+  });
+
+  const totalTickets = ticketTypes.reduce((sum,type) => sum + (orderData[type.id] || 0),0);
+  if(totalTickets === 0){
+    alert("Je moet minimaal 1 ticket bestellen!");
+    return;
+  }
+
+  fetch(APPS_SCRIPT_URL,{
+    method: 'POST',
+    body: JSON.stringify(orderData),
+    headers:{'Content-Type':'application/json'}
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.success){
+      form.style.display='none';
+      tikkie.style.display='block';
+    } else {
+      alert('Er is iets misgegaan bij het plaatsen van je bestelling.');
+      console.error(data);
+    }
+  })
+  .catch(err=>{
+    alert('Kan bestelling niet verzenden. Probeer later.');
+    console.error(err);
+  });
+});
+</script>
+
+</body>
+</html>
