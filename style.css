@@ -1,0 +1,121 @@
+\* styles.css \*/
+
+body {
+font-family: 'Arial', sans-serif;
+background: #f4f4f4;
+margin: 0;
+padding: 0;
+}
+
+header {
+background: orangered;
+color: white;
+padding: 20px 0;
+}
+.header-container {
+max-width: 1000px;
+margin: 0 auto;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0 20px;
+}
+header h1 { margin: 0; }
+header nav a {
+color: white;
+text-decoration: none;
+margin-left: 20px;
+font-weight: bold;
+}
+header nav a\:hover { text-decoration: underline; }
+
+.hero {
+background: url('hero-image.jpg') center/cover no-repeat;
+color: white;
+text-align: center;
+padding: 80px 20px;
+}
+.hero h2 {
+font-size: 2.5em;
+margin-bottom: 10px;
+}
+.hero p {
+font-size: 1.2em;
+}
+
+.container {
+max-width: 800px;
+margin: 40px auto;
+background: white;
+padding: 30px;
+border-radius: 10px;
+box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+color: orangered;
+text-align: center;
+margin-bottom: 20px;
+}
+
+form label {
+display: block;
+margin-top: 15px;
+font-weight: bold;
+}
+
+form input[type='number'] {
+width: 100%;
+padding: 10px;
+margin-top: 5px;
+border-radius: 6px;
+border: 1px solid #ccc;
+box-sizing: border-box;
+}
+
+.ticket-types {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+}
+.ticket {
+display: flex;
+flex-direction: column;
+}
+
+button {
+margin-top: 20px;
+width: 100%;
+padding: 12px;
+background: #2b8a3e;
+color: white;
+border: none;
+border-radius: 6px;
+font-size: 1.1em;
+cursor: pointer;
+}
+button\:hover { background: #276b30; }
+
+.tikkie-btn {
+display: inline-block;
+padding: 12px 20px;
+background: #2b8a3e;
+color: white;
+border-radius: 6px;
+text-decoration: none;
+font-weight: bold;
+}
+.tikkie-btn\:hover { background: #276b30; }
+
+.contact-section {
+margin-top: 40px;
+text-align: center;
+}
+
+footer {
+background: #2b8a3e;
+color: white;
+text-align: center;
+padding: 20px 0;
+margin-top: 40px;
+}
